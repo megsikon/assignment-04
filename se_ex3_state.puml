@@ -1,0 +1,13 @@
+@startuml
+[*] --> New : Create
+New --> Active : Update
+Active --> Resolved : Update
+Active --> Removed : Delete
+Resolved --> Resolved : Delete
+Resolved --> Closed : Update
+Closed --> Closed : Delete
+Closed --> Removed : Update
+Removed --> Removed : Delete
+New --> [*] : Delete
+Removed --> [*] : Update
+@enduml

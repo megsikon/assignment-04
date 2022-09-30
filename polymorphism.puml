@@ -1,0 +1,25 @@
+@startuml
+class Plant{
+    field
+    method()
+}
+
+class Flower{
+    field
+    method()
+}
+
+class Rose {
+    field
+    method()
+}
+
+class Lilly {
+    field
+    method()
+}
+
+Flower <|-- Rose
+Flower <|-- Lilly
+Plant o-- Flower
+@enduml

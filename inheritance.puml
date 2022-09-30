@@ -1,0 +1,19 @@
+@startuml
+class class1{
+    a_field
+    a_method()
+}
+class class2{
+    a_field
+    a_method()
+}
+class class3{
+    a_field
+    a_method()
+}
+
+class1 <|-- class2
+class1 <|-- class3
+
+
+@enduml

@@ -1,0 +1,8 @@
+@startuml
+
+class Encapsulation{
+    a_field
+    a_method()
+}
+
+@enduml

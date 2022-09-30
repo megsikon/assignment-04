@@ -1,0 +1,63 @@
+@startuml
+class KanbanContext{
+    DbSet<WorkItem> Items
+    DbSet<Tag> Items
+    DbSet<User> Items
+    KanbanContext(DbContextOptions<KanbanContext> options)
+    OnModelCreating(ModelBuilder modelBuilder)
+}
+
+class DBContext{
+    
+}
+class ITagRepository{
+    (Response Response, int TagId) Create(TagCreateDTO tag)
+    TagDTO Find(int tagId)
+    IReadOnlyCollection<TagDTO> Read()
+    Response Update(TagUpdateDTO tag)
+    Response Delete(int tagId, bool force = false)
+    
+}
+class IWorkItemRepository{
+    
+}
+class TagRepository{
+    
+}
+class WorkItemRepository{
+    (Response Response, int WorkItemId) Create(WorkItemCreateDTO workItem)
+    WorkItemDetailsDTO Find(int workItemId)
+    IReadOnlyCollection<WorkItemDTO> Read()
+    IReadOnlyCollection<WorkItemDTO> ReadRemoved()
+    IReadOnlyCollection<WorkItemDTO> ReadByTag(string tag)
+    IReadOnlyCollection<WorkItemDTO> ReadByUser(int userId)
+    IReadOnlyCollection<WorkItemDTO> ReadByState(State state)
+    Response Update(WorkItemUpdateDTO workItem)
+    Response Delete(int workItemId)
+    
+}
+class WorkItem{
+    int Id()
+    string Title()
+    int? AssignedToId()
+    User? AssignedTo()
+    State state()
+    ICollection<Tag> Tags()
+    WorkItem(string title)
+}
+class Tag{
+    int Id()
+    string Name()
+    ICollection<WorkItem> WorkItems
+    Tag(string name)
+}
+
+KanbanContext --|> DBContext
+KanbanContext *-- Tag
+KanbanContext *-- WorkItem
+KanbanContext <-- TagRepository
+KanbanContext <-- WorkItemRepository
+TagRepository ..|> ITagRepository
+WorkItemRepository ..|> IWorkItemRepository
+
+@enduml
