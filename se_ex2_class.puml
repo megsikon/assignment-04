@@ -52,12 +52,12 @@ class Tag{
     Tag(string name)
 }
 
-KanbanContext --|> DBContext
-KanbanContext *-- Tag
-KanbanContext *-- WorkItem
-KanbanContext <-- TagRepository
-KanbanContext <-- WorkItemRepository
-TagRepository ..|> ITagRepository
-WorkItemRepository ..|> IWorkItemRepository
+KanbanContext *-up- Tag
+KanbanContext -up-|> DBContext
+KanbanContext *-right- WorkItem
+KanbanContext <-left- TagRepository
+KanbanContext <-down- WorkItemRepository
+TagRepository .down.|> ITagRepository
+WorkItemRepository .down.|> IWorkItemRepository
 
 @enduml
