@@ -1,4 +1,4 @@
-@startuml
+@startuml inheritance
 class class1{
     a_field
     a_method()
