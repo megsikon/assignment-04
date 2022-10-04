@@ -49,7 +49,7 @@ public class WorkItemRepository
                   select new WorkItemDTO(
                       t.Id,
                       t.Title,
-                      t.AssignedTo.Name,
+                      t.AssignedTo!.Name,
                       t.Tags.Select(t => t.Name).ToList(),
                       t.State);
         return workItem.ToList();
@@ -62,7 +62,7 @@ public class WorkItemRepository
                   select new WorkItemDTO(
                       t.Id,
                       t.Title,
-                      t.AssignedTo.Name,
+                      t.AssignedTo!.Name,
                       t.Tags.Select(t => t.Name).ToList(),
                       t.State);
         return workItem.ToList();
@@ -75,7 +75,7 @@ public class WorkItemRepository
                   select new WorkItemDTO(
                       t.Id,
                       t.Title,
-                      t.AssignedTo.Name,
+                      t.AssignedTo!.Name,
                       t.Tags.Select(t => t.Name).ToList(),
                       t.State);
         return workItem.ToList();
@@ -88,7 +88,7 @@ public class WorkItemRepository
                   select new WorkItemDTO(
                       t.Id,
                       t.Title,
-                      t.AssignedTo.Name,
+                      t.AssignedTo!.Name,
                       t.Tags.Select(t => t.Name).ToList(),
                       t.State);
         return workItem.ToList();
@@ -101,7 +101,7 @@ public class WorkItemRepository
                   select new WorkItemDTO(
                       t.Id,
                       t.Title,
-                      t.AssignedTo.Name,
+                      t.AssignedTo!.Name,
                       t.Tags.Select(t => t.Name).ToList(),
                       t.State);
         return workItem.ToList();
@@ -115,9 +115,9 @@ public class WorkItemRepository
                     select new WorkItemDetailsDTO(
                         t.Id,
                         t.Title,
-                        t.Description,
+                        t.Description!,
                         t.Created,
-                        t.AssignedTo.Name,
+                        t.AssignedTo!.Name,
                         t.Tags.Select(t => t.Name).ToList(),
                         t.State,
                         t.StateUpdated);
