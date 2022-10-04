@@ -1,4 +1,4 @@
-@startuml
+@startuml classDiagram
 class KanbanContext{
     DbSet<WorkItem> Items
     DbSet<Tag> Items

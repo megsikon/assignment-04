@@ -1,4 +1,4 @@
-@startuml
+@startuml stateDiagram
 [*] --> New : Create
 New --> Active : Update
 Active --> Resolved : Update
