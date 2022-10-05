@@ -26,14 +26,14 @@ public class WorkItemRepository
         var entity = _context.Items.FirstOrDefault(t => t.Title == workItem.Title);
         Response response;
         if (entity is null) {
-            entity = new WorkItem (workItem.Title);
-/*            {   Title = workItem.Title,
-                AssignedTo = user,
-                Description = workItem.Description,
-                Tags = tagList,
-                Created = System.DateTime.UtcNow,
-                StateUpdated = System.DateTime.UtcNow
-            };*/
+            entity = new WorkItem (workItem.Title) {
+                        Title = workItem.Title,
+                        AssignedTo = user,
+                        Description = workItem.Description,
+                        Tags = tagList,
+                        Created = System.DateTime.UtcNow,
+                        StateUpdated = System.DateTime.UtcNow
+                    };
             _context.Items.Add(entity);
             _context.SaveChanges();
             response = Response.Created;

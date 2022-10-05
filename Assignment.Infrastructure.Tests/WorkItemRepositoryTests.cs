@@ -13,27 +13,9 @@ public class WorkItemRepositoryTests : IDisposable
         var context = new KanbanContext(builder.Options);
         context.Database.EnsureCreated();
 
-        var User1 = new User("Alice", "al@ice.org") {Id = 1, Name = "Alice", Email = "al@ice.org"};
-        var User2 = new User("Bent", "be@nt.org") {Id = 2, Name = "Bent", Email = "be@nt.org"};
-
-        var Task1 = new WorkItem("Task1") {Id = 1, Title = "Task1", AssignedTo = User1, Description = "hej", Tags = new List<Tag> {}};
-        var Task2 = new WorkItem("Task2") {Id = 2, Title = "Task2", AssignedTo = User2, Description = "Empty Description", State = State.Resolved};
-        var Task38 = new WorkItem("SomeTitle") {Id = 38, Description = "Empty Description", State = State.New};
-        var Task40 = new WorkItem("SomeTitle") {Id = 40, Description = "Empty Description", State = State.Active};
-        var Task42 = new WorkItem("SomeTitle") {Id = 42, Description = "Empty Description", State = State.Resolved};
-        
-
-        _context!.Items.Add(Task1);
-        _context.Items.Add(Task2);
-        _context.Items.Add(Task38);
-        _context.Items.Add(Task40);
-        _context.Items.Add(Task42);
-
-        _context.Users.Add(User1);
-        _context.Users.Add(User2);
-
         _context = context;
         _repo = new WorkItemRepository(_context);
+
     }
 
 
@@ -41,32 +23,44 @@ public class WorkItemRepositoryTests : IDisposable
 
     [Fact]
     public void Read_should_return_given_task_details() {
+        _context.Items.Add(new WorkItem(""){Id = 1, Title = "Task1", AssignedTo = new User("", ""){Id = 1, Name = "Alice", Email = "al@ice.org"}, Description = "hej", Tags = new List<Tag> {}});        
+        _context.SaveChanges();
         _repo.Read(1).Should().BeEquivalentTo(new WorkItemDTO(1, "Task1", "Alice", new List<string>(), State.New)); 
     }  
 
     [Fact]
     public void ReadAll_should_return_all_tasks() { 
+        _context.Items.AddRange(new WorkItem(""){Id = 1, Title = "Task1", AssignedTo = new User("", ""){Id = 1, Name = "Alice", Email = "al@ice.org"}, Description = "hej", Tags = new List<Tag> {}}, new WorkItem(""){Id = 2, Title = "Task2", AssignedTo = new User("", ""){Id = 2, Name = "Bent", Email = "be@nt.org"}, Description = "med dig", Tags = new List<Tag> {}});
+        _context.SaveChanges();
         _repo.ReadAll().Should().BeEquivalentTo(new[] {new WorkItemDTO(1, "Task1", "Alice", new List<string>{}, State.New), new WorkItemDTO(2, "Task2", "Bent", new List<string>{}, State.New)});
     }
 
     [Fact]
     public void ReadAllRemoved_should_return_all_removed_tasks() {
+        _context.Items.Add(new WorkItem(""){Id = 1, Title = "Task1", AssignedTo = new User("",""){Id = 1, Name = "Alice", Email = "al@ice.org"}, Description = "hej", Tags = new List<Tag> {}, State = State.Removed});
+        _context.SaveChanges();
         _repo.ReadAllRemoved().Should().BeEquivalentTo(new[] {new WorkItemDTO(1, "Task1", "Alice", new List<string>{}, State.Removed)});
     }
 
     [Fact]
     public void ReadAllByTag_should_return_all_tasks_with_given_tag() {
+         _context.Items.AddRange(new WorkItem(""){Id = 1, Title = "Task1", AssignedTo = new User("",""){Id = 1, Name = "Alice", Email = "al@ice.org"}, Description = "hej", Tags = new List<Tag> {new Tag(""){Id = 1, Name = "Important"}}, State = State.New}, new WorkItem(""){Id = 2, Title = "Task2", AssignedTo = new User("", ""){Id = 2, Name = "Bent", Email = "be@nt.org"}, Description = "med dig", Tags = new List<Tag> {new Tag(""){Id = 2, Name = "Not Important"}}});
+        _context.SaveChanges();
         _repo.ReadAllByTag("Important").Should().BeEquivalentTo(new[] {new WorkItemDTO(1, "Task1", "Alice", new List<string>{"Important"}, State.New)});
     }
 
     [Fact]
     public void ReadAllByUser_should_return_all_tasks_with_given_user() {
+        _context.Items.AddRange(new WorkItem(""){Id = 1, Title = "Task1", AssignedTo = new User("",""){Id = 1, Name = "Herman", Email = "her@man.org"}, Description = "hej", Tags = new List<Tag> {}}, new WorkItem(""){Id = 2, Title = "Task2", AssignedTo = new User("",""){Id = 2, Name = "Bent", Email = "be@nt.org"}, Description = "med dig", Tags = new List<Tag> {}});
+        _context.SaveChanges();
         var expected= new WorkItemDTO(1, "Task1", "Herman", new List<string>{}, State.New);
         _repo.ReadAllByUser(1).Should().BeEquivalentTo(new[] {expected});
     }
 
     [Fact]
     public void ReadAllByState_should_returm_all_tasks_with_given_state() {
+       _context.Items.AddRange(new WorkItem(""){Id = 1, Title = "Task1", AssignedTo = new User("",""){Id = 1, Name = "Alice", Email = "al@ice.org"}, Description = "hej", Tags = new List<Tag> {}, State = State.Resolved}, new WorkItem(""){Id = 2, Title = "Task2", AssignedTo = new User("",""){Id = 2, Name = "Bent", Email = "be@nt.org"}, Description = "med dig", Tags = new List<Tag> {}});
+        _context.SaveChanges();
         _repo.ReadAllByState(State.Resolved).Should().BeEquivalentTo(new[] {new WorkItemDTO(1, "Task1", "Alice", new List<string>{}, State.Resolved)});
     }
 #endregion
@@ -77,6 +71,7 @@ public class WorkItemRepositoryTests : IDisposable
     public void Return_Created_Response_When_Creating_A_CreateTaskDTO() {
         //arrange
         var exp = Response.Created;
+        _context.Users.Add(new User("",""){Id = 1, Name = "Alice", Email = "al@ice.org"});
         //act
         var res = _repo.Create(new WorkItemCreateDTO(
             "title",
@@ -94,6 +89,7 @@ public class WorkItemRepositoryTests : IDisposable
     {
         //Arrange
         var expState = State.New;
+        _context.Users.Add(new User("",""){Id = 1, Name = "Alice", Email = "al@ice.org"});
 
         //Act
         var res = _repo.Create(new WorkItemCreateDTO(
@@ -114,6 +110,7 @@ public class WorkItemRepositoryTests : IDisposable
     {
         //Arrange
         var expTime = DateTime.UtcNow;
+        _context.Users.Add(new User("",""){Id = 1, Name = "Alice", Email = "al@ice.org"});
 
         //Act
         var res = _repo.Create(new WorkItemCreateDTO(
@@ -137,12 +134,15 @@ public class WorkItemRepositoryTests : IDisposable
     [Fact]
     public void Delete_given_existing_Task_with_Status_New_deletes_Task()
     {
+        //Arrange
+         _context.Items.Add(new WorkItem(""){Id = 42, Title = "SomeTitle", Description = "Empty Description", State = State.New});
+        
         //Act
-        var response = _repo.Delete(38);
+        var response = _repo.Delete(42);
 
         //Assert
         response.Should().Be(Deleted);
-        var entity = _context.Items.Find(38);
+        var entity = _context.Items.Find(42);
         entity.Should().BeNull();
 
     }
@@ -151,20 +151,24 @@ public class WorkItemRepositoryTests : IDisposable
     public void Delete_given_existing_Task_with_Status_Active_should_change_Status_to_Removed()
     {
         //Arrange
-        var exp = State.Removed; 
+        _context.Items.Add(new WorkItem(""){Id = 42, Title = "SomeTitle", Description = "Empty Description", State = State.Active});
+         var exp = State.Removed; 
         
         //Act
-        _repo.Delete(40);
+        _repo.Delete(42);
 
         //Assert
-        var entity = _context.Items.Find(40)!; 
+        var entity = _context.Items.Find(42)!; 
         entity.State.Should().Be(exp); 
-        _context.Items.Find(40).Should().NotBeNull();
+        _context.Items.Find(42).Should().NotBeNull();
     }
 
     [Fact]
     public void Delete_given_existing_Task_with_Status_Resolved_should_return_Conflict()
     {
+        //Arrange
+        _context.Items.Add(new WorkItem(""){Id = 42, Title = "SomeTitle", Description = "Empty Description", State = State.Resolved});
+        
         //Act
         var response = _repo.Delete(42);
 
@@ -180,7 +184,8 @@ public class WorkItemRepositoryTests : IDisposable
     {
         //Arrange
         var expTime = DateTime.UtcNow;
-        
+        _context.Items.Add(new WorkItem(""){Id = 2, Title = "SomeTitle", Description = "Empty Description", State = State.Resolved});
+
         _repo.Update(new WorkItemUpdateDTO(
             2,
             "NewTitle",
