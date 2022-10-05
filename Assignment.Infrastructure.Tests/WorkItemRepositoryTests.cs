@@ -101,7 +101,7 @@ public class WorkItemRepositoryTests : IDisposable
 
         //Assert
         var entity = _context.Items.Find(1);
-        entity.State.Should().Be(expState); 
+        entity!.State.Should().Be(expState); 
     }
 
 

@@ -73,7 +73,7 @@ public class TagRepository
             if(force){
                 _context.Tags.Remove(tag);
                 _context.SaveChanges();
-                response = Response.Updated;
+                response = Response.Deleted;
             }else{
                 response = Response.Conflict;
             }

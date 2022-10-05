@@ -51,7 +51,7 @@ public class TagRepositoryTests : IDisposable
     [Fact]
     public void Delete_tag_with_force() {
         var response = _repo.Delete(1, true);
-        response.Should().Be(Response.Updated);
+        response.Should().Be(Response.Deleted);
     }
 
     //read
